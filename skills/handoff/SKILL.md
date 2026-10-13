@@ -51,7 +51,13 @@ synchronization, and replacing project documentation.
 ### Steps
 
 1. Identify the current task and its objective.
-2. Determine the latest known implementation state.
+2. Record the Snapshot and determine the latest implementation state
+   from the workspace (version control status, diffs, recent commits,
+   relevant files), not from conversation memory. Use memory only for
+   what the workspace cannot show: decisions and rationale,
+   verification that was run and its results, and user preferences.
+   When memory and the workspace disagree, trust the workspace and
+   record the discrepancy under Known Issues & Risks.
 3. Extract decisions and their rationale.
 4. Identify completed and remaining work.
 5. Record relevant files and verification results.
@@ -65,6 +71,13 @@ synchronization, and replacing project documentation.
 Do not modify application code during export.
 
 ### What to Capture
+
+**Snapshot.** Always include it, so the next session can tell what
+changed after the handoff was written. List uncommitted files
+(modified and untracked) as paths only, excluding `HANDOFF.md`, or
+`none`. For git: `git rev-parse --abbrev-ref HEAD`,
+`git rev-parse --short HEAD`, `git status --porcelain`. Without
+version control, record only the time and `no version control`.
 
 **Decisions.** Record decisions that materially affect future work:
 what was decided, why, and rejected alternatives when relevant. Skip
@@ -104,6 +117,15 @@ Omit empty or irrelevant sections when possible.
 
 ```markdown
 # Session Handoff
+
+## 0. Snapshot
+
+| Field | Value |
+|-------|-------|
+| Created | ISO 8601 timestamp with time zone |
+| Branch | Current branch |
+| Base commit | Commit the workspace was at |
+| Uncommitted | Modified and untracked paths, or `none` |
 
 ## 1. Objective
 
@@ -163,6 +185,7 @@ remain applicable.
 ### Done When
 
 - The current objective is clear.
+- The Snapshot records the workspace state.
 - Important decisions and their rationale are preserved.
 - Completed and remaining work are distinguishable.
 - Verification status is explicit.
@@ -186,6 +209,17 @@ remain applicable.
 A handoff is a snapshot of a previous session; the workspace may have
 changed since. Before relying on its claims:
 
+- Compare the current branch and commit with the Snapshot.
+- List files changed since the Snapshot's base commit, committed or
+  not (for git: `git diff --name-only <base>` plus untracked files
+  from `git status --porcelain`). Exclude `HANDOFF.md` and files the
+  Snapshot listed as uncommitted; changes to those cannot be detected
+  this way, so inspect them directly.
+- Treat claims that depend on changed files, especially VERIFIED
+  items, as UNVERIFIED and report them.
+- If the base commit cannot be found (e.g. after a rebase or force
+  push) or the handoff has no Snapshot, say so and rely on
+  inspecting files.
 - Inspect referenced files when available.
 - Check relevant repository state when necessary.
 - Identify stale, missing, or conflicting information.

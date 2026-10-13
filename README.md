@@ -61,7 +61,9 @@ Handoff is built for that boundary.
   invented.
 - **The handoff is not trusted blindly.** On import, the agent checks
   the handoff against the actual workspace. When they disagree, the
-  workspace wins.
+  workspace wins. Each handoff records the branch and commit it was
+  written at, so files changed since then are flagged and their
+  earlier checks are no longer treated as verified.
 - **Less is the goal.** Current state over chronology, file paths
   over copied code, one concrete next action over a broad plan.
 
@@ -151,6 +153,15 @@ format. Empty sections such as Blocked are omitted.
 
 ```markdown
 # Session Handoff
+
+## 0. Snapshot
+
+| Field | Value |
+|-------|-------|
+| Created | 2026-10-13T18:40+09:00 |
+| Branch | `feat/rate-limit` |
+| Base commit | `3f9c2ab` |
+| Uncommitted | `tests/test_rate_limit.py` |
 
 ## 1. Objective
 
