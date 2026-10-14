@@ -221,3 +221,7 @@ Write `tests/integration/test_rate_limit_api.py` asserting a 429 with
 
 - No new runtime dependencies beyond the existing Redis client.
 ```
+
+## License
+
+[MIT](LICENSE)
